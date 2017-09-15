@@ -86,7 +86,7 @@ export default class VotePage extends React.Component {
       console.log(this.state.voterName);
       console.log(this.state.list.map(object => object.name));
 
-      const spacedRole = role.replace(/([A-Z])/g, " $1");
+      const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
       const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
 
       // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
