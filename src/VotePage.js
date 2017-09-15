@@ -61,7 +61,8 @@ export default class VotePage extends React.Component {
   addCandidate() {
     if (!VotePage.nameChecker.test(this.state.candidateName)) {
       this.setState({
-        applicationError: `Please reformat the entered candidate's name.`
+        applicationError: `Please reformat the entered candidate's name.`,
+        applicationSuccess: undefined
       });
     } else {
       this.setState({
@@ -77,7 +78,8 @@ export default class VotePage extends React.Component {
   submitBallot() {
     if (!VotePage.nameChecker.test(this.state.voterName)) {
       this.setState({
-        applicationError: `Please reformat the entered voter's name.`
+        applicationError: `Please reformat the entered voter's name.`,
+        applicationSuccess: undefined
       });
     } else {
       console.log(this.state.role);
@@ -94,7 +96,8 @@ export default class VotePage extends React.Component {
         });
       }).catch((result) => {
         this.setState({
-          applicationError: 'Your ballot failed to submit.'
+          applicationError: 'Your ballot failed to submit.',
+          applicationSuccess: undefined
         });
       })
     }
