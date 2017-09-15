@@ -86,13 +86,24 @@ export default class VotePage extends React.Component {
       console.log(this.state.voterName);
       console.log(this.state.list.map(object => object.name));
 
+      const spacedRole = role.replace(/([A-Z])/g, " $1");
+      const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
+
       // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
       let list = this.state.list.map(object => object.name).join(',');
       let queryURL = `${VotePage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
 
-      fetch(queryURL).then((result) => {
+      fetch(queryURL).then(async (result) => {
+        if ((await result.text()).includes('locked')) {
+          this.setState({
+            applicationError: `Voting for ${capitalizedRole} is closed.`,
+            applicationSuccess: undefined
+          });
+        }
+        
         this.setState({
-          applicationSuccess: 'Your ballot has been submitted!'
+          applicationSuccess: 'Your ballot has been submitted!',
+          applicationError: undefined
         });
       }).catch((result) => {
         this.setState({

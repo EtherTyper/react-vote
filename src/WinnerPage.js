@@ -36,12 +36,31 @@ export default class App extends React.Component {
       this.setState({
         winnerText: await result.text()
       });
+    }).catch((result) => {
+      this.setState({
+        applicationError: 'Failed to fetch winner information.'
+      });
+    })
+
+    fetch(`${App.host}/locked`).then(async (result) => {
+      this.setState({
+        votesLocked: (await result.text()) === 'true'
+      });
+    }).catch((result) => {
+      this.setState({
+        applicationError: 'Failed to fetch election information.'
+      });
     })
   }
 
   render() {
     const {useContainer} = this.state;
     const SpecificCandidate = Candidate('president');
+
+    let applicationError = this.state.applicationError;
+
+    // eslint-disable-next-line
+    this.state.applicationError = undefined;
 
     return (
       <div>
@@ -62,9 +81,13 @@ export default class App extends React.Component {
         >
           { this.state.winnerText ?
             <SpecificCandidate name={this.state.winnerText} />
-            : <p style={{fontWeight: 'bold', color: 'gray'}}>
-              Loading winner information.
-            </p> }
+            : this.state.applicationError ?
+              <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
+                {applicationError}
+              </p> :
+              <p style={{fontWeight: 'bold', color: 'gray'}}>
+                Loading winner information.
+              </p> }
         </div>
       </div>
     );
