@@ -33,6 +33,8 @@ export default class App extends React.Component {
 
   loadWinner() {
     fetch(`${App.host}/winner?role=${this.state.role}`).then((result) => {
+      console.log(result.text())
+
       this.setState({
         winnerText: result.text()
       });
