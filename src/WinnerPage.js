@@ -28,7 +28,7 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    loadWinner();
+    this.loadWinner();
   }
 
   loadWinner() {
