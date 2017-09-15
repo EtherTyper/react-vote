@@ -61,7 +61,7 @@ export default class VotePage extends React.Component {
   addCandidate() {
     if (!VotePage.nameChecker.test(this.state.candidateName)) {
       this.setState({
-        nameValidationError: `Please reformat the entered candidate's name.`
+        applicationError: `Please reformat the entered candidate's name.`
       });
     } else {
       this.setState({
@@ -77,7 +77,7 @@ export default class VotePage extends React.Component {
   submitBallot() {
     if (!VotePage.nameChecker.test(this.state.voterName)) {
       this.setState({
-        nameValidationError: `Please reformat the entered voter's name.`
+        applicationError: `Please reformat the entered voter's name.`
       });
     } else {
       console.log(this.state.role);
@@ -89,11 +89,13 @@ export default class VotePage extends React.Component {
       let queryURL = `${VotePage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
 
       fetch(queryURL).then((result) => {
-        fetch(`${VotePage.host}/winner?role=${this.state.role}`).then((result) => {
-          this.setState({
-            winnerText: result.text()
-          });
-        })
+        this.setState({
+          applicationSuccess: 'Your ballot has been submitted!'
+        });
+      }).catch((result) => {
+        this.setState({
+          applicationError: 'Your ballot failed to submit.'
+        });
       })
     }
   }
@@ -115,10 +117,10 @@ export default class VotePage extends React.Component {
   render() {
     const {useContainer} = this.state;
 
-    let nameValidationError = this.state.nameValidationError;
+    let applicationError = this.state.applicationError;
 
     // eslint-disable-next-line
-    this.state.nameValidationError = undefined;
+    this.state.applicationError = undefined;
 
     return (
       <div>
@@ -146,15 +148,15 @@ export default class VotePage extends React.Component {
           </select>
           <input type="button" value="Submit Ballot" onClick={this.submitBallot.bind(this)} />
 
-          { nameValidationError ?
+          { applicationError ?
             <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
-              {nameValidationError}
+              {applicationError}
             </p>
             : null }
 
-          { this.state.winnerText ?
+          { this.state.applicationSuccess ?
             <p style={{fontWeight: 'bold', color: 'green'}} className="App-intro">
-              {this.state.winnerText} is winning!
+              {this.state.applicationSuccess}
             </p>
             : null }
         </div>

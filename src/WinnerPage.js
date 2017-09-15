@@ -56,8 +56,10 @@ export default class App extends React.Component {
           }}
         >
           { this.state.winnerText ?
-            <SpecificCandidate name="EliB" />
-            : <SpecificCandidate name="EliB" /> }
+            <SpecificCandidate name={this.state.winnerText} />
+            : <p style={{fontWeight: 'bold', color: 'gray'}}>
+              Loading winner information.
+            </p> }
         </div>
       </div>
     );
