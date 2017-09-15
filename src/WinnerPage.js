@@ -23,10 +23,15 @@ export default class App extends React.Component {
   static host = 'https://react-vote-server.herokuapp.com';
 
   state = {
-    useContainer: false
+    useContainer: false,
+    role: 'president'
   };
 
-  submitBallot() {
+  componentDidMount() {
+    loadWinner();
+  }
+
+  loadWinner() {
     fetch(`${App.host}/winner?role=${this.state.role}`).then((result) => {
       this.setState({
         winnerText: result.text()
