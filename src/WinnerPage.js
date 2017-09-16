@@ -1,32 +1,25 @@
 import React from "react";
 import "./App.css";
+import { formatRole, host, ApplicationPage } from "./common";
 
 const Candidate = role =>
   class Candidate extends React.Component {
     render() {
-      const spacedRole = role.replace(/([A-Z])/g, " $1");
-      const capitalizedRole =
-        spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
-
       return (
         <div
           className="item"
           style={{ boxShadow: `rgba(0, 0, 0, 0.3) 0px 1px 2px 0px` }}
         >
           <h1>
-            {capitalizedRole} {this.props.name}
+            {formatRole(role)} {this.props.name}
           </h1>
         </div>
       );
     }
   };
 
-export default class WinnerPage extends React.Component {
+export default class WinnerPage extends ApplicationPage {
   container;
-
-  static host = process.env.PRODUCTION
-    ? "https://react-vote-server.herokuapp.com"
-    : "http://127.0.0.1:5000";
 
   state = {
     useContainer: false,
@@ -44,7 +37,7 @@ export default class WinnerPage extends React.Component {
       winnerText: undefined
     });
 
-    fetch(`${WinnerPage.host}/winner?role=${this.state.role}`)
+    fetch(`${host}/winner?role=${this.state.role}`)
       .then(async result => {
         this.setState({
           winnerText: await result.text()
@@ -56,7 +49,7 @@ export default class WinnerPage extends React.Component {
         });
       });
 
-    fetch(`${WinnerPage.host}/locked?role=${this.state.role}`)
+    fetch(`${host}/locked?role=${this.state.role}`)
       .then(async result => {
         this.setState({
           votesLocked: (await result.text()) === "true"
@@ -74,9 +67,7 @@ export default class WinnerPage extends React.Component {
       {
         role: event.target.value
       },
-      () => {
-        this.loadWinner();
-      }
+      this.loadWinner.bind(this)
     );
   }
 
@@ -114,10 +105,7 @@ export default class WinnerPage extends React.Component {
           {this.state.winnerText ? (
             <SpecificCandidate name={this.state.winnerText} />
           ) : this.state.applicationError ? (
-            <p
-              style={{ fontWeight: "bold", color: "red" }}
-              className="App-intro"
-            >
+            <p style={{ fontWeight: "bold", color: "red" }}>
               {this.state.applicationError}
             </p>
           ) : (

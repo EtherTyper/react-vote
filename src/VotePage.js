@@ -3,6 +3,7 @@ import cx from "classnames";
 import DraggableList from "react-draggable-list";
 import md5 from "blueimp-md5";
 import "./App.css";
+import { formatRole, host, nameChecker, ApplicationPage } from "./common";
 
 const Candidate = role =>
   class Candidate extends React.Component {
@@ -16,10 +17,6 @@ const Candidate = role =>
       const shadow = itemSelected * 15 + 1;
       const dragged = itemSelected !== 0;
 
-      const spacedRole = role.replace(/([A-Z])/g, " $1");
-      const capitalizedRole =
-        spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
-
       return (
         <div
           className={cx("item", { dragged })}
@@ -30,7 +27,7 @@ const Candidate = role =>
         >
           {dragHandle(<div className="dragHandle" />)}
           <h1>
-            {item.name === "EliB" ? `Future ${capitalizedRole} ` : null}
+            {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
             {item.name}
           </h1>
         </div>
@@ -38,13 +35,8 @@ const Candidate = role =>
     }
   };
 
-export default class VotePage extends React.Component {
+export default class VotePage extends ApplicationPage {
   container;
-
-  static nameChecker = /^[A-Z][A-Za-z]+[A-Z]$/m;
-  static host = process.env.PRODUCTION
-    ? "https://react-vote-server.herokuapp.com"
-    : "http://127.0.0.1:5000";
 
   state = {
     useContainer: false,
@@ -74,22 +66,8 @@ export default class VotePage extends React.Component {
     })()
   };
 
-  errorMessage(message) {
-    this.setState({
-      applicationError: message,
-      applicationSuccess: undefined
-    });
-  }
-
-  successMessage(message) {
-    this.setState({
-      applicationSuccess: message,
-      applicationError: undefined
-    });
-  }
-
   addCandidate() {
-    if (!VotePage.nameChecker.test(this.state.candidateName)) {
+    if (!nameChecker.test(this.state.candidateName)) {
       this.errorMessage(`Please reformat the entered candidate's name.`);
     } else {
       this.setState({
@@ -106,7 +84,7 @@ export default class VotePage extends React.Component {
   }
 
   submitBallot() {
-    if (!VotePage.nameChecker.test(this.state.voterName)) {
+    if (!nameChecker.test(this.state.voterName)) {
       this.errorMessage(`Please reformat the entered voter's name.`);
     } else {
       console.log(this.state.role);
@@ -114,15 +92,11 @@ export default class VotePage extends React.Component {
       console.log(this.state.list[this.state.role]);
       console.log(this.state.list[this.state.role].map(object => object.name));
 
-      const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
-      const capitalizedRole =
-        spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
-
       // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
       let list = this.state.list[this.state.role]
         .map(object => object.name)
         .join(",");
-      let queryURL = `${VotePage.host}/vote?role=${this.state.role}&voter=${md5(
+      let queryURL = `${host}/vote?role=${this.state.role}&voter=${md5(
         this.state.voterName
       )}&list=${list}`;
 
@@ -133,7 +107,9 @@ export default class VotePage extends React.Component {
           const text = await result.text();
 
           if (text.includes("locked")) {
-            this.errorMessage(`Voting for ${capitalizedRole} is closed.`);
+            this.errorMessage(
+              `Voting for ${formatRole(this.state.role)} is closed.`
+            );
           } else {
             this.successMessage("Your ballot has been submitted!");
           }
@@ -142,17 +118,6 @@ export default class VotePage extends React.Component {
           this.errorMessage("Your ballot failed to submit.");
         });
     }
-  }
-
-  handleEvent(event) {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-      applicationError: undefined
-    });
   }
 
   onListChange(newList) {

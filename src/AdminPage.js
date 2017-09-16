@@ -1,106 +1,38 @@
 import React from "react";
-import md5 from "blueimp-md5";
+import { formatRole, host, ApplicationPage } from "./common";
 import "./App.css";
 
-export default class AdminPage extends React.Component {
+export default class AdminPage extends ApplicationPage {
   container;
-
-  static nameChecker = /^[A-Z]\w+[A-Z]$/m;
-  static host = process.env.PRODUCTION
-    ? "https://react-vote-server.herokuapp.com"
-    : "http://127.0.0.1:5000";
 
   state = {
     role: "president",
     password: ""
   };
 
-  errorMessage(message) {
-    this.setState({
-      applicationError: message,
-      applicationSuccess: undefined
-    });
-  }
-
-  successMessage(message) {
-    this.setState({
-      applicationSuccess: message,
-      applicationError: undefined
-    });
-  }
-
-  submitBallot() {
-    console.log(this.state.role);
-    console.log(this.state.list.map(object => object.name));
-
-    const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
-    const capitalizedRole =
-      spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
-
-    // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
-    const list = this.state.list.map(object => object.name).join(",");
-    const queryURL = `${AdminPage.host}/vote?role=${this.state
-      .role}&voter=${md5(this.state.voterName)}&list=${list}`;
-
-    fetch(queryURL)
-      .then(async result => {
-        if ((await result.text()).includes("locked")) {
-          this.setState({
-            applicationError: `Voting for ${capitalizedRole} is closed.`,
-            applicationSuccess: undefined
-          });
-        }
-
-        this.setState({
-          applicationSuccess: "Your ballot has been submitted!",
-          applicationError: undefined
-        });
-      })
-      .catch(result => {
-        this.setState({
-          applicationError: "Your ballot failed to submit.",
-          applicationSuccess: undefined
-        });
-      });
-  }
-
-  handleEvent(event) {
-    const target = event.target;
-    const value = target.type === "checkbox" ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-      applicationError: undefined
-    });
-  }
-
   lock() {
     const password = encodeURIComponent(this.state.password);
 
-    const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
-    const capitalizedRole =
-      spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
+    const formattedRole = formatRole(this.state.role);
 
-    let queryURL = `${AdminPage.host}/lock?role=${this.state
-      .role}&password=${password}`;
+    let queryURL = `${host}/lock?role=${this.state.role}&password=${password}`;
 
     fetch(queryURL)
       .then(async result => {
         if ((await result.text()).includes("Locked")) {
-          this.successMessage(`Voting for ${capitalizedRole} is closed!`);
+          this.successMessage(`Voting for ${formattedRole} is closed!`);
         } else if (!result.ok) {
-          this.errorMessage(`Failed to lock voting for ${capitalizedRole}.`);
+          this.errorMessage(`Failed to lock voting for ${formattedRole}.`);
         }
       })
       .catch(result => {
-        this.errorMessage(`Failed to lock voting for ${capitalizedRole}.`);
+        this.errorMessage(`Failed to lock voting for ${formattedRole}.`);
       });
   }
 
   reset() {
     const password = encodeURIComponent(this.state.password);
-    let queryURL = `${AdminPage.host}/reset?password=${password}`;
+    let queryURL = `${host}/reset?password=${password}`;
 
     fetch(queryURL)
       .then(async result => {
@@ -147,18 +79,12 @@ export default class AdminPage extends React.Component {
             onClick={this.reset.bind(this)}
           />
           {this.state.applicationError ? (
-            <p
-              style={{ fontWeight: "bold", color: "red" }}
-              className="App-intro"
-            >
+            <p style={{ fontWeight: "bold", color: "red" }}>
               {this.state.applicationError}
             </p>
           ) : null}
           {this.state.applicationSuccess ? (
-            <p
-              style={{ fontWeight: "bold", color: "green" }}
-              className="App-intro"
-            >
+            <p style={{ fontWeight: "bold", color: "green" }}>
               {this.state.applicationSuccess}
             </p>
           ) : null}
