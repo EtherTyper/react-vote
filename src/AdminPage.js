@@ -89,7 +89,18 @@ export default class AdminPage extends React.Component {
   }
 
   reset() {
+    const password = encodeURIComponent(this.state.password);
+    let queryURL = `${AdminPage.host}/reset?password=${password}`;
 
+    fetch(queryURL).then(async (result) => {
+      if ((await result.text()).includes('Reset')) {
+        this.successMessage(`All ballots have been removed!`);
+      } else if (!result.ok) {
+        this.errorMessage(`Failed to clear votes.`)
+      }
+    }).catch((result) => {
+      this.errorMessage(`Failed to clear votes.`)
+    })
   }
 
   render() {
