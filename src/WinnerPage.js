@@ -62,9 +62,9 @@ export default class App extends React.Component {
   handleEvent(event) {
     this.setState({
       role: event.target.value
+    }, () => {
+      this.loadWinner();
     });
-
-    this.loadWinner();
   }
 
   render() {

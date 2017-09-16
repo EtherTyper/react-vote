@@ -9,7 +9,8 @@ export default class AdminPage extends React.Component {
   static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
 
   state = {
-    role: 'president'
+    role: 'president',
+    password: ''
   };
 
   submitBallot() {
@@ -57,8 +58,8 @@ export default class AdminPage extends React.Component {
 
   }
 
-  onListChange(newList) {
-    this.setState({list: newList});
+  reset() {
+
   }
 
   render() {
@@ -69,12 +70,17 @@ export default class AdminPage extends React.Component {
           Password is required for all functionality on it.
         </p>
         <div>
+          <input type="password" name="password" placeholder="Password" value={this.state.candidateName} onChange={this.handleEvent.bind(this)} />
+
+          <br /> {/* Real controls beneath. */}
+
           <select name="role" value={this.state.role} onChange={this.handleEvent.bind(this)}>
             <option value="president">President</option>
             <option value="vicePresident">Vice President</option>
             <option value="librarian">Librarian</option>
           </select>
           <input type="button" value="Lock" onClick={this.lock.bind(this)} />
+          <input type="button" value="Reset" onClick={this.reset.bind(this)} />
 
           { this.state.applicationError ?
             <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
