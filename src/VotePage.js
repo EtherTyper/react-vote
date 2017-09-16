@@ -40,36 +40,62 @@ export default class VotePage extends React.Component {
   container;
 
   static nameChecker = /^[A-Z]\w+[A-Z]$/m;
-  static host = 'https://react-vote-server.herokuapp.com';
+  static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
 
   state = {
     useContainer: false,
     candidateName: '',
     voterName: '',
     role: 'president',
-    list: [
-      'EliB',
-      'JosephJ',
-      'StevenX',
-      'ChristineT',
-      'VaishnaviA'
-    ].map(i => {
-      return { name: i }
-    })
+    list: (function () {
+      let list = {
+        president: [],
+        vicePresident: [
+          'EliB',
+          'JosephJ',
+          'StevenX',
+          'ChristineT',
+          'VaishnaviA'
+        ],
+        librarian: [],
+      }
+
+      for (let role in list) {
+        list[role] = list[role].map(candidate => { 
+          return { name: candidate }
+        })
+      }
+
+      return list;
+    })()
   };
+
+  errorMessage(message) {
+    this.setState({
+      applicationError: message,
+      applicationSuccess: undefined
+    });
+  }
+
+  successMessage(message) {
+    this.setState({
+      applicationSuccess: message,
+      applicationError: undefined
+    });
+  }
 
   addCandidate() {
     if (!VotePage.nameChecker.test(this.state.candidateName)) {
-      this.setState({
-        applicationError: `Please reformat the entered candidate's name.`,
-        applicationSuccess: undefined
-      });
+      this.errorMessage(`Please reformat the entered candidate's name.`);
     } else {
       this.setState({
-        list: [
-          {name: this.state.candidateName},
-          ...this.state.list
-        ],
+        list: {
+          ...this.state.list,
+          [this.state.role] : [
+            {name: this.state.candidateName},
+            ...this.state.list[this.state.role]
+          ]
+        },
         candidateName: ''
       })
     }
@@ -77,39 +103,30 @@ export default class VotePage extends React.Component {
 
   submitBallot() {
     if (!VotePage.nameChecker.test(this.state.voterName)) {
-      this.setState({
-        applicationError: `Please reformat the entered voter's name.`,
-        applicationSuccess: undefined
-      });
+      this.errorMessage(`Please reformat the entered voter's name.`);
     } else {
       console.log(this.state.role);
       console.log(this.state.voterName);
-      console.log(this.state.list.map(object => object.name));
+      console.log(this.state.list[this.state.role]);
+      console.log(this.state.list[this.state.role].map(object => object.name));
 
       const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
       const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
 
       // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
-      let list = this.state.list.map(object => object.name).join(',');
+      let list = this.state.list[this.state.role].map(object => object.name).join(',');
       let queryURL = `${VotePage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
 
       fetch(queryURL).then(async (result) => {
+        console.log('success')
+
         if ((await result.text()).includes('locked')) {
-          this.setState({
-            applicationError: `Voting for ${capitalizedRole} is closed.`,
-            applicationSuccess: undefined
-          });
+          this.errorMessage(`Voting for ${capitalizedRole} is closed.`);
         }
         
-        this.setState({
-          applicationSuccess: 'Your ballot has been submitted!',
-          applicationError: undefined
-        });
+        this.successMessage('Your ballot has been submitted!');
       }).catch((result) => {
-        this.setState({
-          applicationError: 'Your ballot failed to submit.',
-          applicationSuccess: undefined
-        });
+        this.errorMessage('Your ballot failed to submit.');
       })
     }
   }
@@ -120,21 +137,22 @@ export default class VotePage extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      applicationError: undefined
     });
   }
 
   onListChange(newList) {
-    this.setState({list: newList});
+    this.setState({
+      list: {
+        ...this.state.list,
+        [this.state.role]: newList
+      }
+    });
   }
 
   render() {
     const {useContainer} = this.state;
-
-    let applicationError = this.state.applicationError;
-
-    // eslint-disable-next-line
-    this.state.applicationError = undefined;
 
     return (
       <div>
@@ -162,9 +180,9 @@ export default class VotePage extends React.Component {
           </select>
           <input type="button" value="Submit Ballot" onClick={this.submitBallot.bind(this)} />
 
-          { applicationError ?
+          { this.state.applicationError ?
             <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
-              {applicationError}
+              {this.state.applicationError}
             </p>
             : null }
 
@@ -187,7 +205,7 @@ export default class VotePage extends React.Component {
           <DraggableList
             itemKey="name"
             template={Candidate(this.state.role)}
-            list={this.state.list}
+            list={this.state.list[this.state.role]}
             onMoveEnd={newList => this.onListChange(newList)}
             container={()=>useContainer ? this.container : document.body}
           />

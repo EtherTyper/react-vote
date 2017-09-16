@@ -20,7 +20,7 @@ export default class App extends React.Component {
   container;
 
   static nameChecker = /^[A-Z]\w+[A-Z]$/m;
-  static host = 'https://react-vote-server.herokuapp.com';
+  static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
 
   state = {
     useContainer: false,
@@ -32,6 +32,12 @@ export default class App extends React.Component {
   }
 
   loadWinner() {
+    console.log('Loading winner.')
+
+    this.setState({
+      winnerText: undefined
+    })
+
     fetch(`${App.host}/winner?role=${this.state.role}`).then(async (result) => {
       this.setState({
         winnerText: await result.text()
@@ -53,14 +59,17 @@ export default class App extends React.Component {
     })
   }
 
+  handleEvent(event) {
+    this.setState({
+      role: event.target.value
+    });
+
+    this.loadWinner();
+  }
+
   render() {
     const {useContainer} = this.state;
-    const SpecificCandidate = Candidate('president');
-
-    let applicationError = this.state.applicationError;
-
-    // eslint-disable-next-line
-    this.state.applicationError = undefined;
+    const SpecificCandidate = Candidate(this.state.role);
 
     return (
       <div>
@@ -68,6 +77,11 @@ export default class App extends React.Component {
           { this.state.votesLocked ?
             'The following candidate won: ' :
             'At this rate, the winner will be: ' }
+          <select name="role" value={this.state.role} onChange={this.handleEvent.bind(this)}>
+            <option value="president">President</option>
+            <option value="vicePresident">Vice President</option>
+            <option value="librarian">Librarian</option>
+          </select>
         </p>
         <div
           className="list" ref={el => {
@@ -83,7 +97,7 @@ export default class App extends React.Component {
             <SpecificCandidate name={this.state.winnerText} />
             : this.state.applicationError ?
               <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
-                {applicationError}
+                {this.state.applicationError}
               </p> :
               <p style={{fontWeight: 'bold', color: 'gray'}}>
                 Loading winner information.

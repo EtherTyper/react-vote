@@ -1,0 +1,94 @@
+import React from 'react';
+import md5 from 'blueimp-md5';
+import './App.css';
+
+export default class AdminPage extends React.Component {
+  container;
+
+  static nameChecker = /^[A-Z]\w+[A-Z]$/m;
+  static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
+
+  state = {
+    role: 'president'
+  };
+
+  submitBallot() {
+    console.log(this.state.role);
+    console.log(this.state.list.map(object => object.name));
+
+    const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
+    const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
+
+    // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
+    let list = this.state.list.map(object => object.name).join(',');
+    let queryURL = `${AdminPage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
+
+    fetch(queryURL).then(async (result) => {
+      if ((await result.text()).includes('locked')) {
+        this.setState({
+          applicationError: `Voting for ${capitalizedRole} is closed.`,
+          applicationSuccess: undefined
+        });
+      }
+        
+      this.setState({
+        applicationSuccess: 'Your ballot has been submitted!',
+        applicationError: undefined
+      });
+    }).catch((result) => {
+      this.setState({
+        applicationError: 'Your ballot failed to submit.',
+        applicationSuccess: undefined
+      });
+    })
+  }
+
+  handleEvent(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  lock() {
+
+  }
+
+  onListChange(newList) {
+    this.setState({list: newList});
+  }
+
+  render() {
+    return (
+      <div>
+        <p className="App-intro">
+          This page is exclusively for site admins (i.e. Eli.)
+          Password is required for all functionality on it.
+        </p>
+        <div>
+          <select name="role" value={this.state.role} onChange={this.handleEvent.bind(this)}>
+            <option value="president">President</option>
+            <option value="vicePresident">Vice President</option>
+            <option value="librarian">Librarian</option>
+          </select>
+          <input type="button" value="Lock" onClick={this.lock.bind(this)} />
+
+          { this.state.applicationError ?
+            <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">
+              {this.state.applicationError}
+            </p>
+            : null }
+
+          { this.state.applicationSuccess ?
+            <p style={{fontWeight: 'bold', color: 'green'}} className="App-intro">
+              {this.state.applicationSuccess}
+            </p>
+            : null }
+        </div>
+      </div>
+    );
+  }
+}

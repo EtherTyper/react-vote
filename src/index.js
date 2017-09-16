@@ -1,4 +1,3 @@
-// react-dom (what we'll use here)
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
