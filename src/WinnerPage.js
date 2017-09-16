@@ -16,10 +16,9 @@ const Candidate = (role) => class Candidate extends React.Component {
   }
 }
 
-export default class App extends React.Component {
+export default class WinnerPage extends React.Component {
   container;
 
-  static nameChecker = /^[A-Z]\w+[A-Z]$/m;
   static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
 
   state = {
@@ -38,7 +37,7 @@ export default class App extends React.Component {
       winnerText: undefined
     })
 
-    fetch(`${App.host}/winner?role=${this.state.role}`).then(async (result) => {
+    fetch(`${WinnerPage.host}/winner?role=${this.state.role}`).then(async (result) => {
       this.setState({
         winnerText: await result.text()
       });
@@ -48,7 +47,7 @@ export default class App extends React.Component {
       });
     })
 
-    fetch(`${App.host}/locked?role=${this.state.role}`).then(async (result) => {
+    fetch(`${WinnerPage.host}/locked?role=${this.state.role}`).then(async (result) => {
       this.setState({
         votesLocked: (await result.text()) === 'true'
       });

@@ -39,7 +39,7 @@ const Candidate = (role) => class Candidate extends React.Component {
 export default class VotePage extends React.Component {
   container;
 
-  static nameChecker = /^[A-Z]\w+[A-Z]$/m;
+  static nameChecker = /^[A-Z][A-Za-z]+[A-Z]$/m;
   static host = process.env.PRODUCTION ? 'https://react-vote-server.herokuapp.com' : 'http://127.0.0.1:5000';
 
   state = {
