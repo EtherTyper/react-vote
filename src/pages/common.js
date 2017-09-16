@@ -8,9 +8,7 @@ export function formatRole(role) {
   return capitalizedRole;
 }
 
-export const host = process.env.PRODUCTION
-  ? "https://react-vote-server.herokuapp.com"
-  : "http://127.0.0.1:5000";
+export const host = "https://react-vote-server.herokuapp.com"
 export const nameChecker = /^[A-Z][A-Za-z]+[A-Z]$/m;
 
 export class ApplicationPage extends React.Component {
