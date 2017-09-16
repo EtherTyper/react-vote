@@ -48,7 +48,7 @@ export default class App extends React.Component {
       });
     })
 
-    fetch(`${App.host}/locked`).then(async (result) => {
+    fetch(`${App.host}/locked?role=${this.state.role}`).then(async (result) => {
       this.setState({
         votesLocked: (await result.text()) === 'true'
       });

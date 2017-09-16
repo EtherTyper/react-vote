@@ -13,6 +13,20 @@ export default class AdminPage extends React.Component {
     password: ''
   };
 
+  errorMessage(message) {
+    this.setState({
+      applicationError: message,
+      applicationSuccess: undefined
+    });
+  }
+
+  successMessage(message) {
+    this.setState({
+      applicationSuccess: message,
+      applicationError: undefined
+    });
+  }
+
   submitBallot() {
     console.log(this.state.role);
     console.log(this.state.list.map(object => object.name));
@@ -21,8 +35,8 @@ export default class AdminPage extends React.Component {
     const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
 
     // Note: I do not use encodeURIContext because nameChecker already verifies these values are alphanumeric.
-    let list = this.state.list.map(object => object.name).join(',');
-    let queryURL = `${AdminPage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
+    const list = this.state.list.map(object => object.name).join(',');
+    const queryURL = `${AdminPage.host}/vote?role=${this.state.role}&voter=${md5(this.state.voterName)}&list=${list}`;
 
     fetch(queryURL).then(async (result) => {
       if ((await result.text()).includes('locked')) {
@@ -50,12 +64,28 @@ export default class AdminPage extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value
+      [name]: value,
+      applicationError: undefined
     });
   }
 
   lock() {
+    const password = encodeURIComponent(this.state.password);
 
+    const spacedRole = this.state.role.replace(/([A-Z])/g, " $1");
+    const capitalizedRole = spacedRole.charAt(0).toUpperCase() + spacedRole.slice(1);
+
+    let queryURL = `${AdminPage.host}/lock?role=${this.state.role}&password=${password}`;
+
+    fetch(queryURL).then(async (result) => {
+      if ((await result.text()).includes('Locked')) {
+        this.successMessage(`Voting for ${capitalizedRole} is closed!`);
+      } else if (!result.ok) {
+        this.errorMessage(`Failed to lock voting for ${capitalizedRole}.`)
+      }
+    }).catch((result) => {
+      this.errorMessage(`Failed to lock voting for ${capitalizedRole}.`)
+    })
   }
 
   reset() {
@@ -80,7 +110,7 @@ export default class AdminPage extends React.Component {
             <option value="librarian">Librarian</option>
           </select>
           <input type="button" value="Lock" onClick={this.lock.bind(this)} />
-          <input type="button" value="Reset" onClick={this.reset.bind(this)} />
+          <input type="button" value="Complete Reset" onClick={this.reset.bind(this)} />
 
           { this.state.applicationError ?
             <p style={{fontWeight: 'bold', color: 'red'}} className="App-intro">

@@ -120,11 +120,13 @@ export default class VotePage extends React.Component {
       fetch(queryURL).then(async (result) => {
         console.log('success')
 
-        if ((await result.text()).includes('locked')) {
+        const text = await result.text()
+
+        if (text.includes('locked')) {
           this.errorMessage(`Voting for ${capitalizedRole} is closed.`);
+        } else {
+          this.successMessage('Your ballot has been submitted!');
         }
-        
-        this.successMessage('Your ballot has been submitted!');
       }).catch((result) => {
         this.errorMessage('Your ballot failed to submit.');
       })
