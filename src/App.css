@@ -45,7 +45,7 @@
   cursor: move;
   width: 20px;
   height: 16px;
-  background: url('grippy.png') 30% 50% no-repeat no-repeat;
+  background: url('images/grippy.png') 30% 50% no-repeat no-repeat;
 }
 .item:hover .dragHandle, .item.dragged .dragHandle {
   visibility: visible;

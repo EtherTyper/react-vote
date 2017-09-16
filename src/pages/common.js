@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 
 export function formatRole(role) {
   const spacedRole = role.replace(/([A-Z])/g, " $1");

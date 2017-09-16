@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "../App.css";
 import { formatRole, host, ApplicationPage } from "./common";
 
 const Candidate = role =>

@@ -2,7 +2,7 @@ import React from "react";
 import cx from "classnames";
 import DraggableList from "react-draggable-list";
 import md5 from "blueimp-md5";
-import "./App.css";
+import "../App.css";
 import { formatRole, host, nameChecker, ApplicationPage } from "./common";
 
 const Candidate = role =>

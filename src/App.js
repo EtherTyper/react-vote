@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import React from "react";
 import "./index.css";
-import VotePage from "./VotePage";
-import WinnerPage from "./WinnerPage";
-import AdminPage from "./AdminPage";
+import VotePage from "./pages/VotePage";
+import WinnerPage from "./pages/WinnerPage";
+import AdminPage from "./pages/AdminPage";
 import "./App.css";
-import logo from "./logo.svg";
+import logo from "./images/logo.svg";
 
 const App = () => (
   <Router>

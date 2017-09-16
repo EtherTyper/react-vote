@@ -1,6 +1,6 @@
 import React from "react";
 import { formatRole, host, ApplicationPage } from "./common";
-import "./App.css";
+import "../App.css";
 
 export default class AdminPage extends ApplicationPage {
   container;
