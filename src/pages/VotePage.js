@@ -8,7 +8,7 @@ import { formatRole, host, nameChecker, ApplicationPage } from "./common";
 const Candidate = role =>
   class Candidate extends React.Component {
     getDragHeight() {
-      return 28;
+      return 80;
     }
 
     render() {
@@ -27,7 +27,7 @@ const Candidate = role =>
         >
           {dragHandle(<div className="dragHandle" />)}
           <h1>
-            {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
+            {/* item.name === "EliB" ? `Future ${formatRole(role)} ` : null */}
             {item.name}
           </h1>
         </div>
