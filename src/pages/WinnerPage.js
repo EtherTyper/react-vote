@@ -39,9 +39,17 @@ export default class WinnerPage extends ApplicationPage {
 
     fetch(`${host}/winner?role=${this.state.role}`)
       .then(async result => {
-        this.setState({
-          winnerText: await result.text()
-        });
+        let text = await result.text();
+
+        if (text.includes('No votes')) {
+          this.setState({
+            applicationError: "No votes have been placed."
+          });
+        } else {
+          this.setState({
+            winnerText: text
+          });
+        }
       })
       .catch(result => {
         this.setState({
@@ -65,7 +73,10 @@ export default class WinnerPage extends ApplicationPage {
   handleEvent(event) {
     this.setState(
       {
-        role: event.target.value
+        role: event.target.value,
+        applicationError: undefined,
+        votesLocked: undefined,
+        winnerText: undefined
       },
       this.loadWinner.bind(this)
     );
