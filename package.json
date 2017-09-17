@@ -26,8 +26,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-prettier": "^2.2.0",
     "eslint-plugin-react": "^7.1.0",
-    "prettier": "^1.7.0",
-    "react-snapshot": "^1.2.0"
+    "prettier": "^1.7.0"
   },
   "reactSnapshot": {
     "include": [
