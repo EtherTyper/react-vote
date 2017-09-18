@@ -34,7 +34,7 @@ class Candidate extends React.Component {
       >
         {dragHandle(<div className="dragHandle" />)}
         <h1>
-          {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
+          {/* item.name === "EliB" ? `Future ${formatRole(role)} ` : null */}
           {item.name}
         </h1>
         <div className="xButton" onClick={() => deleteFunction(item.name)} />
