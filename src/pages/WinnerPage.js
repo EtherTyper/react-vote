@@ -41,7 +41,7 @@ export default class WinnerPage extends ApplicationPage {
       .then(async result => {
         let text = await result.text();
 
-        if (text.includes('No votes')) {
+        if (text.includes("No votes")) {
           this.setState({
             applicationError: "No votes have been placed."
           });

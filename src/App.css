@@ -42,13 +42,26 @@
   position: absolute;
   top: 0;
   left: 0;
-  cursor: move;
+  cursor: grab;
   width: 20px;
   height: 16px;
   background: url('images/grippy.png') 30% 50% no-repeat no-repeat;
 }
+.item .xButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background: url('images/delete.png') no-repeat no-repeat;
+  background-size: 20px;
+}
 .item:hover .dragHandle, .item.dragged .dragHandle {
   visibility: visible;
+}
+.item:active .dragHandle {
+  cursor: grabbing;
 }
 
 .item h2 {

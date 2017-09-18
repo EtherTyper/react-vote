@@ -5,35 +5,36 @@ import md5 from "blueimp-md5";
 import "../App.css";
 import { formatRole, host, nameChecker, ApplicationPage } from "./common";
 
-const Candidate = role =>
-  class Candidate extends React.Component {
-    getDragHeight() {
-      return 80;
-    }
+const Candidate = class Candidate extends React.Component {
+  getDragHeight() {
+    return 80;
+  }
 
-    render() {
-      const { item, itemSelected, dragHandle } = this.props;
-      const scale = itemSelected * 0.05 + 1;
-      const shadow = itemSelected * 15 + 1;
-      const dragged = itemSelected !== 0;
+  render() {
+    const { item, itemSelected, dragHandle } = this.props;
+    const { role, deleteFunction } = this.props.commonProps;
+    const scale = itemSelected * 0.05 + 1;
+    const shadow = itemSelected * 15 + 1;
+    const dragged = itemSelected !== 0;
 
-      return (
-        <div
-          className={cx("item", { dragged })}
-          style={{
-            transform: `scale(${scale})`,
-            boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
-          }}
-        >
-          {dragHandle(<div className="dragHandle" />)}
-          <h1>
-            {/* item.name === "EliB" ? `Future ${formatRole(role)} ` : null */}
-            {item.name}
-          </h1>
-        </div>
-      );
-    }
-  };
+    return (
+      <div
+        className={cx("item", { dragged })}
+        style={{
+          transform: `scale(${scale})`,
+          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
+        }}
+      >
+        {dragHandle(<div className="dragHandle" />)}
+        <h1>
+          {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
+          {item.name}
+        </h1>
+        <div className="xButton" onClick={() => deleteFunction(item.name)} />
+      </div>
+    );
+  }
+};
 
 export default class VotePage extends ApplicationPage {
   container;
@@ -81,6 +82,17 @@ export default class VotePage extends ApplicationPage {
         candidateName: ""
       });
     }
+  }
+
+  deleteFunction(toDelete) {
+    this.setState({
+      list: {
+        ...this.state.list,
+        [this.state.role]: this.state.list[this.state.role].filter(
+          ({ name }) => toDelete !== name
+        )
+      }
+    });
   }
 
   submitBallot() {
@@ -207,10 +219,14 @@ export default class VotePage extends ApplicationPage {
         >
           <DraggableList
             itemKey="name"
-            template={Candidate(this.state.role)}
+            template={Candidate}
             list={this.state.list[this.state.role]}
             onMoveEnd={newList => this.onListChange(newList)}
             container={() => (useContainer ? this.container : document.body)}
+            commonProps={{
+              role: this.state.role,
+              deleteFunction: this.deleteFunction.bind(this)
+            }}
           />
         </div>
       </div>
