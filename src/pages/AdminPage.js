@@ -70,6 +70,8 @@ export default class AdminPage extends ApplicationPage {
           >
             <option value="president">President</option>
             <option value="vicePresident">Vice President</option>
+            <option value="secretary">Secretary</option>
+            <option value="treasurer">Treasurer</option>
             <option value="librarian">Librarian</option>
           </select>
           <input type="button" value="Lock" onClick={this.lock.bind(this)} />

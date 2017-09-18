@@ -2,21 +2,20 @@ import React from "react";
 import "../App.css";
 import { formatRole, host, ApplicationPage } from "./common";
 
-const Candidate = role =>
-  class Candidate extends React.Component {
-    render() {
-      return (
-        <div
-          className="item"
-          style={{ boxShadow: `rgba(0, 0, 0, 0.3) 0px 1px 2px 0px` }}
-        >
-          <h1>
-            {formatRole(role)} {this.props.name}
-          </h1>
-        </div>
-      );
-    }
-  };
+class Candidate extends React.Component {
+  render() {
+    return (
+      <div
+        className="item"
+        style={{ boxShadow: `rgba(0, 0, 0, 0.3) 0px 1px 2px 0px` }}
+      >
+        <h1>
+          {formatRole(this.props.role)} {this.props.name}
+        </h1>
+      </div>
+    );
+  }
+}
 
 export default class WinnerPage extends ApplicationPage {
   container;
@@ -84,7 +83,6 @@ export default class WinnerPage extends ApplicationPage {
 
   render() {
     const { useContainer } = this.state;
-    const SpecificCandidate = Candidate(this.state.role);
 
     return (
       <div>
@@ -99,6 +97,8 @@ export default class WinnerPage extends ApplicationPage {
           >
             <option value="president">President</option>
             <option value="vicePresident">Vice President</option>
+            <option value="secretary">Secretary</option>
+            <option value="treasurer">Treasurer</option>
             <option value="librarian">Librarian</option>
           </select>
         </p>
@@ -114,7 +114,7 @@ export default class WinnerPage extends ApplicationPage {
           }}
         >
           {this.state.winnerText ? (
-            <SpecificCandidate name={this.state.winnerText} />
+            <Candidate name={this.state.winnerText} role={this.state.role} />
           ) : this.state.applicationError ? (
             <p style={{ fontWeight: "bold", color: "red" }}>
               {this.state.applicationError}

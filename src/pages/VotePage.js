@@ -4,8 +4,9 @@ import DraggableList from "react-draggable-list";
 import md5 from "blueimp-md5";
 import "../App.css";
 import { formatRole, host, nameChecker, ApplicationPage } from "./common";
+import candidates from '../data/candidates'
 
-const Candidate = class Candidate extends React.Component {
+class Candidate extends React.Component {
   getDragHeight() {
     return 80;
   }
@@ -34,7 +35,7 @@ const Candidate = class Candidate extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default class VotePage extends ApplicationPage {
   container;
@@ -44,27 +45,19 @@ export default class VotePage extends ApplicationPage {
     candidateName: "",
     voterName: "",
     role: "president",
-    list: (function() {
-      let list = {
-        president: [],
-        vicePresident: [
-          "EliB",
-          "JosephJ",
-          "StevenX",
-          "ChristineT",
-          "VaishnaviA"
-        ],
-        librarian: []
-      };
+    list: (function(candidates) {
+      let list = {};
 
-      for (let role in list) {
-        list[role] = list[role].map(candidate => {
+      for (let role in candidates) {
+        list[role] = candidates[role].map(candidate => {
           return { name: candidate };
         });
+
+        list[role] = [{ name: 'EliB' }, ...list[role].filter(name => name !== 'EliB')]
       }
 
       return list;
-    })()
+    })(candidates)
   };
 
   addCandidate() {
@@ -182,6 +175,8 @@ export default class VotePage extends ApplicationPage {
           >
             <option value="president">President</option>
             <option value="vicePresident">Vice President</option>
+            <option value="secretary">Secretary</option>
+            <option value="treasurer">Treasurer</option>
             <option value="librarian">Librarian</option>
           </select>
           <input

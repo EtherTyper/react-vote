@@ -1,0 +1,28 @@
+{
+    "president": [
+        "HelenH",
+        "JosephJ",
+        "EliB",
+        "ChristineT"
+    ],
+    "vicePresident": [
+        "HelenH",
+        "JosephJ",
+        "EliB",
+        "MahaI"
+    ],
+    "secretary": [
+        "AmandaL",
+        "ChristineT",
+        "EliB",
+        "MahaI"
+    ],
+    "treasurer": [
+        "ChristineT",
+        "EliB"
+    ],
+    "librarian": [
+        "ChristineT",
+        "EliB"
+    ]
+}
