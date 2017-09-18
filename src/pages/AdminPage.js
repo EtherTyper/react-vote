@@ -1,5 +1,5 @@
 import React from "react";
-import { formatRole, host, ApplicationPage } from "./common";
+import { formatRole, host, ApplicationPage, RolePicker } from "./common";
 import "../App.css";
 
 export default class AdminPage extends ApplicationPage {
@@ -63,17 +63,10 @@ export default class AdminPage extends ApplicationPage {
             onChange={this.handleEvent.bind(this)}
           />
           <br /> {/* Real controls beneath. */}
-          <select
-            name="role"
-            value={this.state.role}
+          <RolePicker
+            role={this.state.role}
             onChange={this.handleEvent.bind(this)}
-          >
-            <option value="president">President</option>
-            <option value="vicePresident">Vice President</option>
-            <option value="secretary">Secretary</option>
-            <option value="treasurer">Treasurer</option>
-            <option value="librarian">Librarian</option>
-          </select>
+          />
           <input type="button" value="Lock" onClick={this.lock.bind(this)} />
           <input
             type="button"

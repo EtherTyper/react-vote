@@ -3,8 +3,14 @@ import cx from "classnames";
 import DraggableList from "react-draggable-list";
 import md5 from "blueimp-md5";
 import "../App.css";
-import { formatRole, host, nameChecker, ApplicationPage } from "./common";
-import candidates from '../data/candidates'
+import {
+  formatRole,
+  host,
+  nameChecker,
+  ApplicationPage,
+  RolePicker
+} from "./common";
+import candidates from "../data/candidates";
 
 class Candidate extends React.Component {
   getDragHeight() {
@@ -53,7 +59,10 @@ export default class VotePage extends ApplicationPage {
           return { name: candidate };
         });
 
-        list[role] = [{ name: 'EliB' }, ...list[role].filter(name => name !== 'EliB')]
+        list[role] = [
+          { name: "EliB" },
+          ...list[role].filter(name => name !== "EliB")
+        ];
       }
 
       return list;
@@ -168,17 +177,10 @@ export default class VotePage extends ApplicationPage {
             value={this.state.voterName}
             onChange={this.handleEvent.bind(this)}
           />
-          <select
-            name="role"
-            value={this.state.role}
+          <RolePicker
+            role={this.state.role}
             onChange={this.handleEvent.bind(this)}
-          >
-            <option value="president">President</option>
-            <option value="vicePresident">Vice President</option>
-            <option value="secretary">Secretary</option>
-            <option value="treasurer">Treasurer</option>
-            <option value="librarian">Librarian</option>
-          </select>
+          />
           <input
             type="button"
             value="Submit Ballot"

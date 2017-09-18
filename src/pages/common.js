@@ -8,8 +8,18 @@ export function formatRole(role) {
   return capitalizedRole;
 }
 
-export const host = "https://react-vote-server.herokuapp.com"
+export const host = "https://react-vote-server.herokuapp.com";
 export const nameChecker = /^[A-Z][A-Za-z]+[A-Z]$/m;
+
+export const RolePicker = ({ role, onChange }) => (
+  <select name="role" value={role} onChange={onChange}>
+    <option value="president">President</option>
+    <option value="vicePresident">Vice President</option>
+    <option value="secretary">Secretary</option>
+    <option value="treasurer">Treasurer</option>
+    <option value="librarian">Librarian</option>
+  </select>
+);
 
 export class ApplicationPage extends React.Component {
   errorMessage(message) {

@@ -1,6 +1,6 @@
 import React from "react";
 import "../App.css";
-import { formatRole, host, ApplicationPage } from "./common";
+import { formatRole, host, ApplicationPage, RolePicker } from "./common";
 
 class Candidate extends React.Component {
   render() {
@@ -90,17 +90,10 @@ export default class WinnerPage extends ApplicationPage {
           {this.state.votesLocked
             ? "The following candidate won: "
             : "At this rate, the winner will be: "}
-          <select
-            name="role"
-            value={this.state.role}
+          <RolePicker
+            role={this.state.role}
             onChange={this.handleEvent.bind(this)}
-          >
-            <option value="president">President</option>
-            <option value="vicePresident">Vice President</option>
-            <option value="secretary">Secretary</option>
-            <option value="treasurer">Treasurer</option>
-            <option value="librarian">Librarian</option>
-          </select>
+          />
         </p>
         <div
           className="list"
