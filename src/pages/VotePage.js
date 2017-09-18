@@ -5,7 +5,7 @@ import md5 from "blueimp-md5";
 import "../App.css";
 import { formatRole, host, nameChecker, ApplicationPage } from "./common";
 
-const Candidate = class Candidate extends React.Component {
+class Candidate extends React.Component {
   getDragHeight() {
     return 80;
   }
@@ -34,7 +34,7 @@ const Candidate = class Candidate extends React.Component {
       </div>
     );
   }
-};
+}
 
 export default class VotePage extends ApplicationPage {
   container;
