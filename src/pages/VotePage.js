@@ -72,7 +72,7 @@ export default class VotePage extends ApplicationPage {
   addCandidate() {
     if (!nameChecker.test(this.state.candidateName)) {
       this.errorMessage(`Please reformat the entered candidate's name.`);
-    } else if (this.state.list[this.state.role].contains(this.state.candidateName)) {
+    } else if (this.state.list[this.state.role].map(candidate => candidate.name).includes(this.state.candidateName)) {
       this.errorMessage(`Please enter a new candidate's name.`);
     } else {
       this.setState({
