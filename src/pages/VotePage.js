@@ -29,12 +29,12 @@ class Candidate extends React.Component {
         className={cx("item", { dragged })}
         style={{
           transform: `scale(${scale})`,
-          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
+          boxShadow: `${item.name === 'EliB' ? 'goldenrod': 'rgba(0, 0, 0, 0.3)'} 0px ${shadow}px ${2 * shadow}px 0px`
         }}
       >
         {dragHandle(<div className="dragHandle" />)}
         <h1>
-          {/* item.name === "EliB" ? `Future ${formatRole(role)} ` : null */}
+          {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
           {item.name}
         </h1>
         <div className="xButton" onClick={() => deleteFunction(item.name)} />
@@ -61,7 +61,7 @@ export default class VotePage extends ApplicationPage {
 
         list[role] = [
           { name: "EliB" },
-          ...list[role].filter(name => name !== "EliB")
+          ...list[role].filter(({name}) => name !== "EliB")
         ];
       }
 
@@ -72,6 +72,8 @@ export default class VotePage extends ApplicationPage {
   addCandidate() {
     if (!nameChecker.test(this.state.candidateName)) {
       this.errorMessage(`Please reformat the entered candidate's name.`);
+    } else if (this.state.list[this.state.role].contains(this.state.candidateName)) {
+      this.errorMessage(`Please enter a new candidate's name.`);
     } else {
       this.setState({
         list: {
@@ -87,6 +89,12 @@ export default class VotePage extends ApplicationPage {
   }
 
   deleteFunction(toDelete) {
+    if (toDelete === 'EliB') {
+      this.errorMessage('Wrong candidate selected for deletion.')
+
+      return;
+    }
+
     this.setState({
       list: {
         ...this.state.list,
@@ -138,7 +146,7 @@ export default class VotePage extends ApplicationPage {
     this.setState({
       list: {
         ...this.state.list,
-        [this.state.role]: newList
+        [this.state.role]: [{ name: 'EliB' }, ...newList.filter(({name}) => name !== 'EliB')]
       }
     });
   }
