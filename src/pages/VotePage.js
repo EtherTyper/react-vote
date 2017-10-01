@@ -19,7 +19,7 @@ class Candidate extends React.Component {
 
   render() {
     const { item, itemSelected, dragHandle } = this.props;
-    const { role, deleteFunction } = this.props.commonProps;
+    const { deleteFunction } = this.props.commonProps;
     const scale = itemSelected * 0.05 + 1;
     const shadow = itemSelected * 15 + 1;
     const dragged = itemSelected !== 0;
@@ -221,7 +221,6 @@ export default class VotePage extends ApplicationPage {
             onMoveEnd={newList => this.onListChange(newList)}
             container={() => (useContainer ? this.container : document.body)}
             commonProps={{
-              role: this.state.role,
               deleteFunction: this.deleteFunction.bind(this)
             }}
           />
