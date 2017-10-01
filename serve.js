@@ -1,4 +1,5 @@
 require('serve')('./build', {
+  port: 5001,
   open: true
 });
 
