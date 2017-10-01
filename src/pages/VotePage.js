@@ -29,14 +29,11 @@ class Candidate extends React.Component {
         className={cx("item", { dragged })}
         style={{
           transform: `scale(${scale})`,
-          boxShadow: `${item.name === "EliB"
-            ? "goldenrod"
-            : "rgba(0, 0, 0, 0.3)"} 0px ${shadow}px ${2 * shadow}px 0px`
+          boxShadow: `rgba(0, 0, 0, 0.3) 0px ${shadow}px ${2 * shadow}px 0px`
         }}
       >
         {dragHandle(<div className="dragHandle" />)}
         <h1>
-          {item.name === "EliB" ? `Future ${formatRole(role)} ` : null}
           {item.name}
         </h1>
         <div className="xButton" onClick={() => deleteFunction(item.name)} />
@@ -60,11 +57,6 @@ export default class VotePage extends ApplicationPage {
         list[role] = candidates[role].map(candidate => {
           return { name: candidate };
         });
-
-        list[role] = [
-          { name: "EliB" },
-          ...list[role].filter(({ name }) => name !== "EliB")
-        ];
       }
 
       return list;
@@ -95,12 +87,6 @@ export default class VotePage extends ApplicationPage {
   }
 
   deleteFunction(toDelete) {
-    if (toDelete === "EliB") {
-      this.errorMessage("Wrong candidate selected for deletion.");
-
-      return;
-    }
-
     this.setState({
       list: {
         ...this.state.list,
@@ -152,10 +138,7 @@ export default class VotePage extends ApplicationPage {
     this.setState({
       list: {
         ...this.state.list,
-        [this.state.role]: [
-          { name: "EliB" },
-          ...newList.filter(({ name }) => name !== "EliB")
-        ]
+        [this.state.role]: newList
       }
     });
   }
