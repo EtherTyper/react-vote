@@ -8,7 +8,7 @@ export function formatRole(role) {
   return capitalizedRole;
 }
 
-export const host = "https://react-vote-server.herokuapp.com";
+export const host = "http//127.0.0.1:5000";
 export const nameChecker = /^[A-Z][A-Za-z]+[A-Z]$/m;
 
 export const RolePicker = ({ role, onChange }) => (
