@@ -9,7 +9,8 @@
     "react-dom": "^15.6.1",
     "react-draggable-list": "^3.4.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.13"
+    "react-scripts": "1.0.13",
+    "serve": "^6.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +35,6 @@
       "/winner",
       "/admin"
     ]
-  }
+  },
+  "homepage": "."
 }
